@@ -1,9 +1,11 @@
 # RGB-Color-Game
 <html>
 
+<h3>Game Screen</h3>
 
-Format: ![Alt Text](https://github.com/Rifat1/RGB-Color-Game/blob/master/Assets/Screen%20Shot%202019-11-11%20at%202.21.14%20AM.png)
+![Alt Text](https://github.com/Rifat1/RGB-Color-Game/blob/master/Assets/Screen%20Shot%202019-11-11%20at%202.21.14%20AM.png)
 
+<h3>Correct Choice Screen</h3>
 
-Format: ![Alt Text](https://github.com/Rifat1/RGB-Color-Game/blob/master/Assets/Screen%20Shot%202019-11-11%20at%202.21.29%20AM.png)
+![Alt Text](https://github.com/Rifat1/RGB-Color-Game/blob/master/Assets/Screen%20Shot%202019-11-11%20at%202.21.29%20AM.png)
 </html>
