@@ -24,7 +24,7 @@ Game Instructions:
 
 1) Player can choose difficulty level. Computer then generates random RGB colors.
 
-2) Player has to guess which of the RGB colors mathches with the RGB color mentioned on the top panel.
+2) Player has to guess which of the RGB colors matches with the RGB color mentioned on the top panel.
 
 3) Top panel changes color if player makes the correct choice.</p>
 
