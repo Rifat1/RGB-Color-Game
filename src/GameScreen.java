@@ -1,30 +1,36 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
 
 
 public class GameScreen extends JFrame{
     private Container contentPane=getContentPane();
-    private JPanel fullPanel, topPanel, bottomPanel, gameGridPanel, topTextPanel;
-    private JLabel rgbGameLabel;
+    private JPanel fullPanel, topPanel, bottomPanel, gameGridPanel, topTextPanel, topButtonPanel;
+    private JLabel topGameLabel;
     private JButton exitButton,resetButton,easyButton,hardButton;
     private Dimension gameGridPanelSize,buttonSize,topPanelSize;
-    int row,column, red,green,blue;
-    Color color,windowColor;
-    String rgbTopText;
-
+    int row,column, red,green,blue, topRed,topGreen,topBlue;
+    Color color, topTextColor, windowColor;
+    String topText;
+    ArrayList<ArrayList<Integer>> colorArrayList;
 
     public GameScreen(){
         fullPanel=new JPanel(new BorderLayout());
-        fullPanel.setBorder(new EmptyBorder(50, 0, 50, 0));
 
-//        setupTopPanel();
-        setupGameGridPanel();
+        createAllPanels();
+        setupTopButtonPanel();
+        setupTopPanel();
+        setupGameGridPanel(2,3);
+        setupTopTextPanel();
         setupBottomPanel();
         contentPane.add(fullPanel);
         setWindowBackgroundColor();
 //        createMenu();
-        setBounds(400, 200, 700, 600);
+        setBounds(300, 100, 800, 700);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
@@ -32,24 +38,40 @@ public class GameScreen extends JFrame{
 
 
     private void createAllPanels(){
-        topPanelSize=new Dimension(500,50);
-        topPanel=new JPanel(new BorderLayout());
+        topPanel=new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));
 
         topTextPanel=new JPanel();
+        topTextPanel.setBorder(new EmptyBorder(0,70,0,50));
 
+        topButtonPanel=new JPanel();
 
     }
 
 
     private void setupTopTextPanel(){
 
+        getRandomColor();
 
-        rgbTopText="<html><h1>Which one is the color<br>" +
-                "rgb(90,90,90)</h1></html>";
-        rgbGameLabel =new JLabel(rgbTopText);
+        topText ="<html><h1>Which one is the color<br>" +
+                "rgb("+ topRed + ", " + topGreen + ", " +topBlue+")</h1></html>";
+        topGameLabel =new JLabel(topText);
+
+        topTextPanel.add(topGameLabel);
 
 
     }
+
+    private void getRandomColor(){
+        Random rand = new Random();
+        int index=rand.nextInt(colorArrayList.size());
+        ArrayList item = colorArrayList.get(index);
+        topRed = (int) item.get(0);
+        topGreen = (int) item.get(1);
+        topBlue= (int) item.get(2);
+        topTextColor=new Color(topRed,topGreen,topBlue);
+    }
+
 
     private void setupTopButtonPanel(){
         buttonSize=new Dimension(80, 40);
@@ -62,70 +84,89 @@ public class GameScreen extends JFrame{
         resetButton.setPreferredSize(buttonSize);
         easyButton.setPreferredSize(buttonSize);
         hardButton.setPreferredSize(buttonSize);
-        topPanel.setPreferredSize(topPanelSize);
+
+        topButtonPanel.add(resetButton);
+        topButtonPanel.add(easyButton);
+        topButtonPanel.add(hardButton);
+
+        resetButton.addActionListener(actionEvent->resetEvent());
 
     }
 
     private void setupTopPanel(){
 
-
-
-        topPanel.add(rgbGameLabel);
-
-
-
-
-
-        topPanel.add(resetButton);
-        topPanel.add(easyButton);
-        topPanel.add(hardButton);
-        topPanel.add(rgbGameLabel);
-
-        resetButton.addActionListener(actionEvent->resetEvent());
+        topPanel.add(topTextPanel);
+        topPanel.add(topButtonPanel);
 
         fullPanel.add(topPanel,BorderLayout.NORTH);
     }
 
-    private void setupGameGridPanel(){
-//        ArrayList<E> <Color> lists = new ArrayList<>();
-
-        gameGridPanelSize=new Dimension(390,270);
+    private void setupGameGridPanel(int row, int column){
         buttonSize=new Dimension(160, 160);
-        gameGridPanel=new JPanel(new GridBagLayout());
-        gameGridPanel.setPreferredSize(new Dimension(gameGridPanelSize));
 
+        gameGridPanel=new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
-        row=2;
-        column=3;
-        for (int i = 0; i<row; i++) {
+//        row=2;
+//        column=3;
+        int colorNum = row*column;
+
+        //creates empty inner Arraylist of size colorNum for each rgb color
+        createColorArrayList(colorNum);
+
+        for (int i = 0, b=0; i<row; b=i+3, i++) {
             c.gridy = i;
             for (int j = 0; j < column; j++) {
                 c.gridx = j;
                 JButton button = new JButton();
-//                button.setFocusPainted(false);
-//                button.setBorderPainted(false);
-//                button.setContentAreaFilled(false);
                 button.setBorder(BorderFactory.createEmptyBorder(0,0,0,0)); // Especially important
                 button.setPreferredSize(buttonSize);
 
+                //sets random Color for red, green and blue
+                randomColor();
 
-                int red = (int)(Math.random() * 255 + 1);
-                int green = (int)(Math.random() * 255 + 1);
-                int blue = (int)(Math.random() * 255 + 1);
-
-                color=new Color(red,green,blue);
-
-//                lists.add(color);
+                //adds rgb colors to inner Arraylist for each row
+//                for (int colorPosition=0 ; colorPosition<3; colorPosition++){
+                    colorArrayList.get(b+j).add(red);
+                    colorArrayList.get(b+j).add(green);
+                    colorArrayList.get(b+j).add(blue);
+//                }
 
                 button.setBackground(color);
                 button.setOpaque(true);
+
+                button.addActionListener(e -> {
+                    if (((JButton)e.getSource()).getBackground().equals(topTextColor)){
+//                        ((JButton) e.getSource()).removeAll();
+                        topTextPanel.removeAll();
+                        topTextPanel.revalidate();
+                        topTextPanel.repaint();
+                        topText="<html><h1 style='color: #FFFFFF'>CORRECT Choice!</h1></html>";
+                        topGameLabel =new JLabel(topText);
+                        topTextPanel.add(topGameLabel);
+
+                        topTextPanel.setBorder(new EmptyBorder(40,0,40,0));
+                        topTextPanel.setBackground(topTextColor);
+                    }
+//                    System.out.println(topTextColor);
+//                    System.out.println(((JButton)e.getSource()).getBackground());
+                });
+
+
 
                 c.insets= new Insets(7 , 7, 7, 7);        //ADDS SPACING BETWEEN GRIDS
 
                 gameGridPanel.add(button, c);
             }
         }
+        System.out.println(colorArrayList);
         fullPanel.add(gameGridPanel,BorderLayout.CENTER);
+    }
+
+    private void createColorArrayList(int colorNum){
+        colorArrayList = new ArrayList<ArrayList<Integer>>();
+        for(int i=0; i<colorNum; i++){
+            colorArrayList.add(new ArrayList<>());
+        }
     }
 
     private void setupBottomPanel(){
@@ -143,9 +184,31 @@ public class GameScreen extends JFrame{
 
     }
 
+    private void randomColor(){
+
+        red = (int)(Math.random() * 255 + 1);
+        green = (int)(Math.random() * 255 + 1);
+        blue = (int)(Math.random() * 255 + 1);
+
+        color=new Color(red,green,blue);
+    }
+
 
     private void resetEvent(){
-        new GameScreen();
+//        this.dispose();
+//        new GameScreen();
+        fullPanel.removeAll();
+        fullPanel.revalidate();
+        fullPanel.repaint();
+        createAllPanels();
+        setupTopButtonPanel();
+        setupTopPanel();
+        setupGameGridPanel(2,3);
+        setupTopTextPanel();
+        setupBottomPanel();
+        contentPane.add(fullPanel);
+        setWindowBackgroundColor();
+
     }
 
     private void exitEvent(){
@@ -153,12 +216,12 @@ public class GameScreen extends JFrame{
     }
 
     private void setWindowBackgroundColor(){
-        windowColor=new Color(90,90,90);
+//        windowColor=new Color(90,90,90);
 
-        fullPanel.setBackground(windowColor);
-//        topPanel.setBackground(windowColor);
-        gameGridPanel.setBackground(windowColor);
-        bottomPanel.setBackground(windowColor);
+        fullPanel.setBackground(new Color(80,38,49));
+        topPanel.setBackground(new Color(120,120,10));
+        gameGridPanel.setBackground(new Color(10,120,120));
+        bottomPanel.setBackground(new Color(120,10,120));
 
     }
 
