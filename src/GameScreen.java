@@ -21,14 +21,8 @@ public class GameScreen extends JFrame{
     public GameScreen(){
         fullPanel=new JPanel(new BorderLayout());
 
-        createAllPanels();
-        setupTopButtonPanel();
-        setupTopPanel();
-        setupGameGridPanel(2,3);
-        setupTopTextPanel();
-        setupBottomPanel();
-        contentPane.add(fullPanel);
-        setWindowBackgroundColor();
+        setupAllPanels(2,3);
+
 //        createMenu();
         setBounds(300, 100, 800, 700);
         setVisible(true);
@@ -48,6 +42,16 @@ public class GameScreen extends JFrame{
 
     }
 
+    private void setupAllPanels(int row, int column){
+        createAllPanels();
+        setupTopButtonPanel();
+        setupTopPanel();
+        setupGameGridPanel(row,column);
+        setupTopTextPanel();
+        setupBottomPanel();
+        contentPane.add(fullPanel);
+        setWindowBackgroundColor();
+    }
 
     private void setupTopTextPanel(){
 
@@ -89,8 +93,9 @@ public class GameScreen extends JFrame{
         topButtonPanel.add(easyButton);
         topButtonPanel.add(hardButton);
 
-        resetButton.addActionListener(actionEvent->resetEvent());
-
+        resetButton.addActionListener(actionEvent -> resetEvent());
+        easyButton.addActionListener(actionEvent -> setEasyMode());
+        hardButton.addActionListener(actionEvent -> resetEvent());
     }
 
     private void setupTopPanel(){
@@ -137,20 +142,11 @@ public class GameScreen extends JFrame{
                 button.addActionListener(e -> {
                     if (((JButton)e.getSource()).getBackground().equals(topTextColor)){
 //                        ((JButton) e.getSource()).removeAll();
-                        topTextPanel.removeAll();
-                        topTextPanel.revalidate();
-                        topTextPanel.repaint();
-                        topText="<html><h1 style='color: #FFFFFF'>CORRECT Choice!</h1></html>";
-                        topGameLabel =new JLabel(topText);
-                        topTextPanel.add(topGameLabel);
-
-                        topTextPanel.setBorder(new EmptyBorder(40,0,40,0));
-                        topTextPanel.setBackground(topTextColor);
+                        setCorrectChoiceDisplay();
                     }
 //                    System.out.println(topTextColor);
 //                    System.out.println(((JButton)e.getSource()).getBackground());
                 });
-
 
 
                 c.insets= new Insets(7 , 7, 7, 7);        //ADDS SPACING BETWEEN GRIDS
@@ -184,6 +180,25 @@ public class GameScreen extends JFrame{
 
     }
 
+    private void setEasyMode(){
+        fullPanel.removeAll();
+        fullPanel.revalidate();
+        fullPanel.repaint();
+        setupAllPanels(1,3);
+    }
+
+    private void setCorrectChoiceDisplay(){
+        topTextPanel.removeAll();
+        topTextPanel.revalidate();
+        topTextPanel.repaint();
+        topText="<html><h1 style='color: #FFFFFF'>CORRECT Choice!</h1></html>";
+        topGameLabel =new JLabel(topText);
+        topTextPanel.add(topGameLabel);
+
+        topTextPanel.setBorder(new EmptyBorder(40,0,40,0));
+        topTextPanel.setBackground(topTextColor);
+    }
+
     private void randomColor(){
 
         red = (int)(Math.random() * 255 + 1);
@@ -200,14 +215,8 @@ public class GameScreen extends JFrame{
         fullPanel.removeAll();
         fullPanel.revalidate();
         fullPanel.repaint();
-        createAllPanels();
-        setupTopButtonPanel();
-        setupTopPanel();
-        setupGameGridPanel(2,3);
-        setupTopTextPanel();
-        setupBottomPanel();
-        contentPane.add(fullPanel);
-        setWindowBackgroundColor();
+        setupAllPanels(2,3);
+
 
     }
 
